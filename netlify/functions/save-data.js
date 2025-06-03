@@ -4,7 +4,7 @@ const path = require('path');
 exports.handler = async (event) => {
   try {
     // Check if request is POST
-    if (event.method !== 'POST') {
+    if (event.httpMethod !== 'POST') {
       return {
         statusCode: 405,
         headers: {
