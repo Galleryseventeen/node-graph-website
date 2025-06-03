@@ -13,15 +13,20 @@ const AdminPanel = ({ onSave, onClose }) => {
 
   useEffect(() => {
     // Load existing nodes and links
-    fetch('/data/nodes.json')
-      .then(res => res.json())
+    fetch('/.netlify/functions/load-data')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to load data');
+        }
+        return res.json();
+      })
       .then(data => {
         setNodes(data.nodes);
         setLinks(data.links);
       })
       .catch(error => {
         console.error('Error loading data:', error);
-        alert('Failed to load existing nodes. Please try again.');
+        alert('Failed to load existing nodes. Please try refreshing the page.');
       });
   }, []);
 
@@ -67,13 +72,10 @@ const AdminPanel = ({ onSave, onClose }) => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save data');
-      }
-      
       const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
+      
+      if (!response.ok || data.error) {
+        throw new Error(data.error || 'Failed to save data');
       }
 
       onSave({

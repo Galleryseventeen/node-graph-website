@@ -3,26 +3,38 @@ const path = require('path');
 
 exports.handler = async (event) => {
   try {
+    // Check if request is POST
     if (event.method !== 'POST') {
       return {
         statusCode: 405,
-        body: JSON.stringify({ message: 'Method not allowed' }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ error: 'Method not allowed' })
       };
     }
 
+    // Parse request body
     const { nodes, links } = JSON.parse(event.body);
 
     // Validate data
     if (!Array.isArray(nodes) || !Array.isArray(links)) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Invalid data format' }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ error: 'Invalid data format' })
       };
     }
 
     // Get the absolute path to the nodes.json file
     const filePath = path.join(__dirname, '../../public/data/nodes.json');
     
+    // Ensure the data directory exists
+    const dataDir = path.dirname(filePath);
+    await fs.mkdir(dataDir, { recursive: true });
+
     // Write the data with proper formatting
     await fs.writeFile(
       filePath,
