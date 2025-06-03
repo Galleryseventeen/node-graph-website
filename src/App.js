@@ -7,9 +7,6 @@ function App() {
   const [nodesData, setNodesData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [password, setPassword] = useState('');
-  const ADMIN_PASSWORD = 'admin123'; // Change this to a secure password
 
   useEffect(() => {
     // Check if user is logged in
@@ -25,16 +22,6 @@ function App() {
         alert('Failed to load data. Please try refreshing the page.');
       });
   }, []);
-
-  const handleLogin = (password) => {
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem('adminToken', ADMIN_PASSWORD);
-      setIsAdmin(true);
-      setShowLogin(false);
-    } else {
-      alert('Invalid password');
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -78,7 +65,15 @@ function App() {
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <button onClick={() => setShowLogin(true)}>Login as Admin</button>
+          <button onClick={() => {
+            const password = prompt('Enter admin password:');
+            if (password === 'admin123') {
+              localStorage.setItem('adminToken', 'admin123');
+              setIsAdmin(true);
+            } else {
+              alert('Invalid password');
+            }
+          }}>Login as Admin</button>
         )}
       </div>
 
