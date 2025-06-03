@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    { "id": "1", "name": "Root", "type": "root" },
+    { "id": "2", "name": "Child 1", "type": "child" },
+    { "id": "3", "name": "Child 2", "type": "child" }
+  ],
+  "links": [
+    { "source": "1", "target": "2" },
+    { "source": "1", "target": "3" }
+  ]
+}
