@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background-color: #FAF6EF;
+  position: relative;
 }
 
 main {
@@ -14,6 +15,98 @@ main {
 
 svg {
   background-color: #FAF6EF;
+}
+
+.admin-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(250, 246, 239, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+.admin-panel h2 {
+  color: #6617CE;
+  margin-bottom: 20px;
+}
+
+.node-editor, .node-list {
+  margin-bottom: 20px;
+}
+
+.node-editor h3, .node-list h3 {
+  color: #1D201F;
+  margin-bottom: 10px;
+}
+
+.node-editor input, .node-editor select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #1D201F;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.node-editor button {
+  background: #6617CE;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.node-editor button:hover {
+  background: #5514B3;
+}
+
+.node-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.node-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.node-list li:last-child {
+  border-bottom: none;
+}
+
+.save-button {
+  background: #1D201F;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.save-button:hover {
+  background: #333;
 }
 
 .node {
