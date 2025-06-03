@@ -4,7 +4,6 @@ import * as d3 from 'd3';
 const NodeGraph = ({ data }) => {
   const svgRef = useRef();
   const [selectedNode, setSelectedNode] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Function to get node color based on type and depth
   const getNodeColor = (node, depth = 0) => {
