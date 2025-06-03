@@ -61,6 +61,10 @@ function App() {
     }
   };
 
+  const handleClosePanel = () => {
+    setShowAdminPanel(false);
+  };
+
   if (!nodesData) return <div>Loading...</div>;
 
   return (
