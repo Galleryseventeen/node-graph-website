@@ -45,12 +45,6 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAdmin, showAdminPanel]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    setIsAdmin(false);
-    setShowAdminPanel(false);
-  };
-
   const handleSaveData = async (data) => {
     try {
       await fetch('/.netlify/functions/save-data', {
