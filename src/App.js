@@ -21,11 +21,34 @@ function App() {
         console.error('Error loading data:', error);
         alert('Failed to load data. Please try refreshing the page.');
       });
+
+    // Add Command+A shortcut
+    const handleKeyDown = (e) => {
+      if (e.key === 'a' && e.metaKey) {
+        e.preventDefault();
+        if (isAdmin) {
+          setShowAdminPanel(!showAdminPanel);
+        } else {
+          const password = prompt('Enter admin password:');
+          if (password === 'admin123') {
+            localStorage.setItem('adminToken', 'admin123');
+            setIsAdmin(true);
+            setShowAdminPanel(true);
+          } else {
+            alert('Invalid password');
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     setIsAdmin(false);
+    setShowAdminPanel(false);
   };
 
   const handleSaveData = async (data) => {
@@ -55,36 +78,26 @@ function App() {
 
   return (
     <div className="app">
-      <div className="header">
-        <h1>Interactive Node Graph</h1>
-        {isAdmin ? (
-          <>
-            <button onClick={() => setShowAdminPanel(!showAdminPanel)}>
-              {showAdminPanel ? 'Close Admin Panel' : 'Open Admin Panel'}
-            </button>
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          <button onClick={() => {
-            const password = prompt('Enter admin password:');
-            if (password === 'admin123') {
-              localStorage.setItem('adminToken', 'admin123');
-              setIsAdmin(true);
-            } else {
-              alert('Invalid password');
-            }
-          }}>Login as Admin</button>
-        )}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search nodes..."
+          className="search-input"
+        />
+      </div>
+
+      <div className="graph-container">
+        <NodeGraph data={nodesData} />
       </div>
 
       {showAdminPanel && (
-        <AdminPanel 
-          onSave={handleSaveData} 
-          onClose={handleClosePanel}
-        />
+        <div className="admin-panel-overlay">
+          <AdminPanel 
+            onSave={handleSaveData} 
+            onClose={handleClosePanel}
+          />
+        </div>
       )}
-
-      <NodeGraph data={nodesData} />
     </div>
   );
 }

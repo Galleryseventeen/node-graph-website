@@ -15,8 +15,15 @@ const NodeGraph = ({ data }) => {
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    const width = 800;
-    const height = 600;
+    const width = window.innerWidth;
+    const height = window.innerHeight - 100; // Subtract search bar height
+
+    // Create zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 10])
+      .on('zoom', (event) => {
+        svg.selectAll('g').attr('transform', event.transform);
+      });
 
     // Create force simulation
     const simulation = d3.forceSimulation(data.nodes)
@@ -77,6 +84,9 @@ const NodeGraph = ({ data }) => {
         .attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
+    // Apply zoom behavior
+    svg.call(zoom);
+
     // Drag functions
     function dragstarted(event, d) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -108,8 +118,8 @@ const NodeGraph = ({ data }) => {
   };
 
   return (
-    <div>
-      <svg ref={svgRef} width={800} height={600} />
+    <div className="node-graph-container">
+      <svg ref={svgRef} width="100%" height="100%" />
       {selectedNode && (
         <div className="node-content">
           <h3>{selectedNode.name}</h3>
@@ -134,14 +144,6 @@ const NodeGraph = ({ data }) => {
           <button onClick={() => setSelectedNode(null)}>Close</button>
         </div>
       )}
-      <div className="search-bar">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search nodes..."
-        />
-      </div>
     </div>
   );
 };
