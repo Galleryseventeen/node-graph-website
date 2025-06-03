@@ -23,6 +23,12 @@ function App() {
       });
   }, []);
 
+  // Check if user is logged in
+  useEffect(() => {
+    const adminToken = localStorage.getItem('adminToken');
+    setIsAdmin(!!adminToken);
+  }, []);
+
   const handleLogin = () => {
     if (password === ADMIN_PASSWORD) {
       setIsAdmin(true);
