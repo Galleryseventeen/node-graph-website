@@ -54,7 +54,7 @@ const AdminPanel = ({ onSave, onClose }) => {
     setLinks(updatedLinks);
   };
 
-  const handleSave = async () => {
+  const handleSaveData = async () => {
     try {
       const response = await fetch('/.netlify/functions/save-data', {
         method: 'POST',
@@ -151,7 +151,7 @@ const AdminPanel = ({ onSave, onClose }) => {
       </div>
 
       <div className="admin-actions">
-        <button onClick={handleSave} className="save-button">Save Changes</button>
+        <button onClick={handleSaveData} className="save-button">Save Changes</button>
         <button onClick={onClose} className="close-button">Close</button>
       </div>
     </div>
