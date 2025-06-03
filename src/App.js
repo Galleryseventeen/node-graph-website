@@ -6,15 +6,19 @@ import './App.css';
 function App() {
   const [nodesData, setNodesData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [password, setPassword] = useState('');
   const ADMIN_PASSWORD = 'admin123'; // Change this to a secure password
 
   useEffect(() => {
-    // Load initial nodes data
-    fetch('data/nodes.json')
-      .then(response => response.json())
+    // Check if user is logged in
+    const token = localStorage.getItem('adminToken');
+    setIsAdmin(!!token);
+
+    // Load initial data
+    fetch('/data/nodes.json')
+      .then(res => res.json())
       .then(data => setNodesData(data))
       .catch(error => {
         console.error('Error loading data:', error);
@@ -22,14 +26,9 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    setIsAdmin(!!token);
-  }, []);
-
   const handleLogin = (password) => {
-    if (password === "admin123") {
-      localStorage.setItem('adminToken', 'admin123');
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem('adminToken', ADMIN_PASSWORD);
       setIsAdmin(true);
       setShowLogin(false);
     } else {
@@ -68,57 +67,29 @@ function App() {
   if (!nodesData) return <div>Loading...</div>;
 
   return (
-    <div className="App">
-      <main>
-        <NodeGraph data={nodesData} />
-        
-        {!isAdmin && (
-          <button 
-            className="admin-login-button" 
-            onClick={() => setShowLogin(true)}
-          >
-            Admin Login
-          </button>
-        )}
-
-        {showLogin && (
-          <div className="login-overlay">
-            <div className="login-form">
-              <h3>Admin Login</h3>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button onClick={handleLogin}>Login</button>
-              <button onClick={() => setShowLogin(false)}>Cancel</button>
-            </div>
-          </div>
-        )}
-
-        {isAdmin && (
+    <div className="app">
+      <div className="header">
+        <h1>Interactive Node Graph</h1>
+        {isAdmin ? (
           <>
-            <button 
-              className="admin-logout-button" 
-              onClick={handleLogout}
-            >
-              Logout
+            <button onClick={() => setShowAdminPanel(!showAdminPanel)}>
+              {showAdminPanel ? 'Close Admin Panel' : 'Open Admin Panel'}
             </button>
-            <button 
-              className="admin-login-button" 
-              onClick={() => setShowAdminPanel(true)}
-            >
-              Open Admin Panel
-            </button>
-            {showAdminPanel && (
-              <div className="admin-overlay">
-                <AdminPanel onSave={handleSave} onClose={handleClosePanel} />
-              </div>
-            )}
+            <button onClick={handleLogout}>Logout</button>
           </>
+        ) : (
+          <button onClick={() => setShowLogin(true)}>Login as Admin</button>
         )}
-      </main>
+      </div>
+
+      {showAdminPanel && (
+        <AdminPanel 
+          onSave={handleSaveData} 
+          onClose={handleClosePanel}
+        />
+      )}
+
+      <NodeGraph data={nodesData} />
     </div>
   );
 }
