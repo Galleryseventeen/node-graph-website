@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Auth } from '@netlify/auth';
 
 const AdminPanel = ({ onSave }) => {
   const [nodes, setNodes] = useState([]);
