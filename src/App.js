@@ -9,7 +9,13 @@ function App() {
     // Load initial nodes data
     fetch('/data/nodes.json')
       .then(response => response.json())
-      .then(data => setNodesData(data));
+      .then(data => {
+        console.log('Loaded data:', data);
+        setNodesData(data);
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+      });
   }, []);
 
   if (!nodesData) {
