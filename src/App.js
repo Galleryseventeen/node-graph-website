@@ -15,63 +15,53 @@ function App() {
     // Load initial nodes data
     fetch('data/nodes.json')
       .then(response => response.json())
-      .then(data => {
-        console.log('Loaded data:', data);
-        setNodesData(data);
-      })
+      .then(data => setNodesData(data))
       .catch(error => {
         console.error('Error loading data:', error);
+        alert('Failed to load data. Please try refreshing the page.');
       });
   }, []);
 
-  // Check if user is logged in
   useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken');
-    setIsAdmin(!!adminToken);
+    const token = localStorage.getItem('adminToken');
+    setIsAdmin(!!token);
   }, []);
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
+  const handleLogin = (password) => {
+    if (password === "admin123") {
+      localStorage.setItem('adminToken', 'admin123');
       setIsAdmin(true);
       setShowLogin(false);
-      localStorage.setItem('adminToken', 'true');
     } else {
-      alert('Incorrect password');
+      alert('Invalid password');
     }
   };
 
   const handleLogout = () => {
-    setIsAdmin(false);
-    setShowAdminPanel(false);
     localStorage.removeItem('adminToken');
+    setIsAdmin(false);
   };
 
-  const handleClosePanel = () => {
-    setShowAdminPanel(false);
-  };
-
-  const handleSave = async (data) => {
+  const handleSaveData = async (data) => {
     try {
-      const response = await fetch('/.netlify/functions/save-data', {
+      await fetch('/.netlify/functions/save-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-
-      if (response.ok) {
-        setNodesData(data);
-        handleClosePanel(); // Close panel after successful save
-      }
+      
+      setNodesData(data);
+      setShowAdminPanel(false);
+      alert('Data saved successfully!');
     } catch (error) {
       console.error('Error saving data:', error);
+      alert('Failed to save data. Please try again.');
     }
   };
 
-  if (!nodesData) {
-    return <div>Loading...</div>;
-  }
+  if (!nodesData) return <div>Loading...</div>;
 
   return (
     <div className="App">

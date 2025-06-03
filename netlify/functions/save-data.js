@@ -20,22 +20,31 @@ exports.handler = async (event) => {
       };
     }
 
-    // Save data to public/data/nodes.json
-    const dataPath = path.join(process.cwd(), 'public', 'data', 'nodes.json');
+    // Get the absolute path to the nodes.json file
+    const filePath = path.join(__dirname, '../../public/data/nodes.json');
+    
+    // Write the data with proper formatting
     await fs.writeFile(
-      dataPath,
-      JSON.stringify({ nodes, links }, null, 2)
+      filePath,
+      JSON.stringify({ nodes, links }, null, 2),
+      'utf8'
     );
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Data saved successfully' }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: 'Data saved successfully' })
     };
   } catch (error) {
     console.error('Error saving data:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Internal server error' }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ error: error.message || 'Failed to save data' })
     };
   }
 };
