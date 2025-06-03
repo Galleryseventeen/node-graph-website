@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
 const NodeGraph = ({ data }) => {
   const svgRef = useRef();
+  const [selectedNode, setSelectedNode] = useState(null);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -26,14 +27,23 @@ const NodeGraph = ({ data }) => {
     // Create nodes
     const node = svg.selectAll('.node')
       .data(data.nodes)
-      .enter().append('circle')
+      .enter().append('g')
+      .attr('class', 'node-group')
+      .on('click', (event, d) => {
+        setSelectedNode(d);
+      });
+
+    // Add circle to node group
+    node.append('circle')
       .attr('class', 'node')
       .attr('r', 10)
-      .style('fill', '#69b3a2')
-      .on('click', (event, d) => {
-        // Handle node click
-        console.log('Node clicked:', d);
-      });
+      .style('fill', '#69b3a2');
+
+    // Add text labels to nodes
+    node.append('text')
+      .attr('dx', 12)
+      .attr('dy', 4)
+      .text(d => d.name);
 
     // Update positions on tick
     simulation.on('tick', () => {
@@ -44,15 +54,23 @@ const NodeGraph = ({ data }) => {
         .attr('y2', d => d.target.y);
 
       node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
+        .attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
     return () => simulation.stop();
   }, [data]);
 
   return (
-    <svg ref={svgRef} width={800} height={600} />
+    <div>
+      <svg ref={svgRef} width={800} height={600} />
+      {selectedNode && (
+        <div className="node-content">
+          <h3>{selectedNode.name}</h3>
+          <p>{selectedNode.content || 'Click to expand'}</p>
+          <button onClick={() => setSelectedNode(null)}>Close</button>
+        </div>
+      )}
+    </div>
   );
 };
 

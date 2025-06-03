@@ -1,8 +1,23 @@
 {
   "nodes": [
-    { "id": "1", "name": "Root", "type": "root" },
-    { "id": "2", "name": "Child 1", "type": "child" },
-    { "id": "3", "name": "Child 2", "type": "child" }
+    {
+      "id": "1",
+      "name": "Root",
+      "type": "root",
+      "content": "This is the root node. Click to expand and see more content."
+    },
+    {
+      "id": "2",
+      "name": "Child 1",
+      "type": "child",
+      "content": "This is Child 1. It can contain text, links, or videos."
+    },
+    {
+      "id": "3",
+      "name": "Child 2",
+      "type": "child",
+      "content": "This is Child 2. Click to explore more!"
+    }
   ],
   "links": [
     { "source": "1", "target": "2" },

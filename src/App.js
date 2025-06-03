@@ -4,19 +4,12 @@ import './App.css';
 
 function App() {
   const [nodesData, setNodesData] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Load initial nodes data
     fetch('/data/nodes.json')
       .then(response => response.json())
       .then(data => setNodesData(data));
-  }, []);
-
-  // Admin authentication check (this will be implemented later)
-  useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken');
-    setIsAdmin(!!adminToken);
   }, []);
 
   if (!nodesData) {
