@@ -98,10 +98,13 @@ const NodeGraph = ({ data }) => {
     return () => simulation.stop();
   }, [data]);
 
-  const getYoutubeId = (url) => {
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(shorts\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
+  const isUrl = (str) => {
+    try {
+      new URL(str);
+      return true;
+    } catch (err) {
+      return false;
+    }
   };
 
   return (
@@ -110,19 +113,23 @@ const NodeGraph = ({ data }) => {
       {selectedNode && (
         <div className="node-content">
           <h3>{selectedNode.name}</h3>
-          {selectedNode.isLink ? (
-            <div className="youtube-container">
+          {isUrl(selectedNode.content) ? (
+            <div className="iframe-container">
               <iframe
-                title={`YouTube video ${selectedNode.name}`}
-                width="560"
-                height="315"
-                src={`https://www.youtube.com/embed/${getYoutubeId(selectedNode.content)}`}
+                title={`Embedded content ${selectedNode.name}`}
+                src={selectedNode.content}
+                width="100%"
+                height="400"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
             </div>
           ) : (
-            <p>{selectedNode.content || 'Click to expand'}</p>
+            <div className="content-container">
+              <div className="content-text" dangerouslySetInnerHTML={{
+                __html: selectedNode.content || 'Click to expand'
+              }} />
+            </div>
           )}
           <button onClick={() => setSelectedNode(null)}>Close</button>
         </div>

@@ -18,6 +18,10 @@ const AdminPanel = ({ onSave, onClose }) => {
       .then(data => {
         setNodes(data.nodes);
         setLinks(data.links);
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+        alert('Failed to load existing nodes. Please try again.');
       });
   }, []);
 
@@ -50,11 +54,37 @@ const AdminPanel = ({ onSave, onClose }) => {
     setLinks(updatedLinks);
   };
 
-  const handleSave = () => {
-    onSave({
-      nodes,
-      links
-    });
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/.netlify/functions/save-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nodes,
+          links
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save data');
+      }
+      
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      onSave({
+        nodes,
+        links
+      });
+      alert('Changes saved successfully!');
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert('Failed to save changes. Please try again.');
+    }
   };
 
   return (
@@ -89,11 +119,12 @@ const AdminPanel = ({ onSave, onClose }) => {
           ))}
         </select>
         <div className="content-editor">
-          <input
-            type="text"
-            placeholder="Content (text or YouTube URL)"
+          <textarea
+            placeholder="Content (text or URL)"
             value={newNode.content}
             onChange={(e) => setNewNode({ ...newNode, content: e.target.value })}
+            rows="5"
+            style={{ width: '100%', marginBottom: '10px' }}
           />
           <div className="link-toggle">
             <input
@@ -101,7 +132,7 @@ const AdminPanel = ({ onSave, onClose }) => {
               checked={newNode.isLink}
               onChange={(e) => setNewNode({ ...newNode, isLink: e.target.checked })}
             />
-            <label>Is YouTube Link</label>
+            <label>Is URL (will be embedded as iframe)</label>
           </div>
         </div>
         <button onClick={handleAddNode}>Add Node</button>
