@@ -42,12 +42,23 @@ exports.handler = async (event) => {
       'utf8'
     );
 
+    // Also save to a backup file
+    const backupPath = path.join(__dirname, '../../public/data/nodes-backup.json');
+    await fs.writeFile(
+      backupPath,
+      JSON.stringify({ nodes, links }, null, 2),
+      'utf8'
+    );
+
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: 'Data saved successfully' })
+      body: JSON.stringify({ 
+        message: 'Data saved successfully',
+        backupCreated: true
+      })
     };
   } catch (error) {
     console.error('Error saving data:', error);
@@ -56,7 +67,10 @@ exports.handler = async (event) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ error: error.message || 'Failed to save data' })
+      body: JSON.stringify({ 
+        error: error.message || 'Failed to save data',
+        details: error.stack
+      })
     };
   }
 };

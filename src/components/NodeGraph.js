@@ -13,9 +13,16 @@ const NodeGraph = ({ data }) => {
   };
 
   useEffect(() => {
+    if (!data || !data.nodes || !data.links) {
+      return;
+    }
+
     const svg = d3.select(svgRef.current);
     const width = window.innerWidth;
     const height = window.innerHeight - 100; // Subtract search bar height
+
+    // Clear existing elements
+    svg.selectAll('*').remove();
 
     // Create zoom behavior
     const zoom = d3.zoom()
@@ -104,7 +111,10 @@ const NodeGraph = ({ data }) => {
       d.fy = null;
     }
 
-    return () => simulation.stop();
+    return () => {
+      simulation.stop();
+      svg.selectAll('*').remove();
+    };
   }, [data]);
 
   const isUrl = (str) => {
