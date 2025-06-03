@@ -24,9 +24,6 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Node Graph Explorer</h1>
-      </header>
       <main>
         <NodeGraph data={nodesData} />
       </main>

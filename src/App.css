@@ -3,28 +3,17 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.App-header {
-  background-color: #f0f2f5;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.App-header h1 {
-  color: #1a73e8;
-  margin: 0;
+  background-color: #FAF6EF;
 }
 
 main {
   flex: 1;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #FAF6EF;
 }
 
 svg {
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background-color: #FAF6EF;
 }
 
 .node {
@@ -49,16 +38,16 @@ svg {
 
 .node-content h3 {
   margin: 0 0 10px 0;
-  color: #1a73e8;
+  color: #6617CE;
 }
 
 .node-content p {
   margin: 10px 0;
-  color: #666;
+  color: #1D201F;
 }
 
 .node-content button {
-  background: #1a73e8;
+  background: #6617CE;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -68,5 +57,29 @@ svg {
 }
 
 .node-content button:hover {
-  background: #1557b0;
+  background: #5514B3;
+}
+
+.search-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  max-width: 90%;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #1D201F;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 16px;
+  color: #1D201F;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #6617CE;
 }

@@ -4,6 +4,14 @@ import * as d3 from 'd3';
 const NodeGraph = ({ data }) => {
   const svgRef = useRef();
   const [selectedNode, setSelectedNode] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Function to get node color based on type and depth
+  const getNodeColor = (node, depth = 0) => {
+    if (node.type === 'root') return '#6617CE';
+    if (depth === 1) return '#1D201F';
+    return '#909090';
+  };
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -45,13 +53,17 @@ const NodeGraph = ({ data }) => {
     node.append('circle')
       .attr('class', 'node')
       .attr('r', 10)
-      .style('fill', '#69b3a2');
+      .style('fill', (d) => {
+        const depth = d.parent ? (d.parent.depth || 0) + 1 : 0;
+        return getNodeColor(d, depth);
+      });
 
     // Add text labels to nodes
     node.append('text')
       .attr('dx', 12)
       .attr('dy', 4)
-      .text(d => d.name);
+      .text(d => d.name)
+      .style('fill', '#333');
 
     // Update positions on tick
     simulation.on('tick', () => {
@@ -96,6 +108,14 @@ const NodeGraph = ({ data }) => {
           <button onClick={() => setSelectedNode(null)}>Close</button>
         </div>
       )}
+      <div className="search-bar">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search nodes..."
+        />
+      </div>
     </div>
   );
 };
