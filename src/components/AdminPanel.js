@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
-const AdminPanel = ({ onSave }) => {
+const AdminPanel = ({ onSave, onClose }) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
-  const [newNode, setNewNode] = useState({ name: '', type: 'child', parentId: '' });
+  const [newNode, setNewNode] = useState({ 
+    name: '', 
+    type: 'child', 
+    parentId: '',
+    content: '',
+    isLink: false
+  });
 
   useEffect(() => {
     // Load existing nodes and links
@@ -22,11 +28,19 @@ const AdminPanel = ({ onSave }) => {
       id: Date.now().toString(),
       name: newNode.name,
       type: newNode.type,
-      parentId: newNode.parentId
+      parentId: newNode.parentId,
+      content: newNode.content,
+      isLink: newNode.isLink
     };
 
     setNodes([...nodes, newNodeData]);
-    setNewNode({ name: '', type: 'child', parentId: '' });
+    setNewNode({ 
+      name: '', 
+      type: 'child', 
+      parentId: '',
+      content: '',
+      isLink: false
+    });
   };
 
   const handleDeleteNode = (nodeId) => {
@@ -45,7 +59,10 @@ const AdminPanel = ({ onSave }) => {
 
   return (
     <div className="admin-panel">
-      <h2>Admin Panel</h2>
+      <div className="admin-header">
+        <h2>Admin Panel</h2>
+        <button onClick={onClose} className="close-button">Close</button>
+      </div>
       
       <div className="node-editor">
         <h3>Add New Node</h3>
@@ -71,6 +88,22 @@ const AdminPanel = ({ onSave }) => {
             <option key={node.id} value={node.id}>{node.name}</option>
           ))}
         </select>
+        <div className="content-editor">
+          <input
+            type="text"
+            placeholder="Content (text or YouTube URL)"
+            value={newNode.content}
+            onChange={(e) => setNewNode({ ...newNode, content: e.target.value })}
+          />
+          <div className="link-toggle">
+            <input
+              type="checkbox"
+              checked={newNode.isLink}
+              onChange={(e) => setNewNode({ ...newNode, isLink: e.target.checked })}
+            />
+            <label>Is YouTube Link</label>
+          </div>
+        </div>
         <button onClick={handleAddNode}>Add Node</button>
       </div>
 
@@ -86,7 +119,10 @@ const AdminPanel = ({ onSave }) => {
         </ul>
       </div>
 
-      <button onClick={handleSave} className="save-button">Save Changes</button>
+      <div className="admin-actions">
+        <button onClick={handleSave} className="save-button">Save Changes</button>
+        <button onClick={onClose} className="close-button">Close</button>
+      </div>
     </div>
   );
 };

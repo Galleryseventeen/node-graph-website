@@ -98,13 +98,32 @@ const NodeGraph = ({ data }) => {
     return () => simulation.stop();
   }, [data]);
 
+  const getYoutubeId = (url) => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(shorts\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  };
+
   return (
     <div>
       <svg ref={svgRef} width={800} height={600} />
       {selectedNode && (
         <div className="node-content">
           <h3>{selectedNode.name}</h3>
-          <p>{selectedNode.content || 'Click to expand'}</p>
+          {selectedNode.isLink ? (
+            <div className="youtube-container">
+              <iframe
+                title={`YouTube video ${selectedNode.name}`}
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${getYoutubeId(selectedNode.content)}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <p>{selectedNode.content || 'Click to expand'}</p>
+          )}
           <button onClick={() => setSelectedNode(null)}>Close</button>
         </div>
       )}

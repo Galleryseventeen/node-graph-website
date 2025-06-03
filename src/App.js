@@ -7,6 +7,7 @@ function App() {
   const [nodesData, setNodesData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [password, setPassword] = useState('');
   const ADMIN_PASSWORD = 'admin123'; // Change this to a secure password
 
@@ -41,7 +42,12 @@ function App() {
 
   const handleLogout = () => {
     setIsAdmin(false);
+    setShowAdminPanel(false);
     localStorage.removeItem('adminToken');
+  };
+
+  const handleClosePanel = () => {
+    setShowAdminPanel(false);
   };
 
   const handleSave = async (data) => {
@@ -56,6 +62,7 @@ function App() {
 
       if (response.ok) {
         setNodesData(data);
+        handleClosePanel(); // Close panel after successful save
       }
     } catch (error) {
       console.error('Error saving data:', error);
@@ -104,9 +111,17 @@ function App() {
             >
               Logout
             </button>
-            <div className="admin-overlay">
-              <AdminPanel onSave={handleSave} />
-            </div>
+            <button 
+              className="admin-login-button" 
+              onClick={() => setShowAdminPanel(true)}
+            >
+              Open Admin Panel
+            </button>
+            {showAdminPanel && (
+              <div className="admin-overlay">
+                <AdminPanel onSave={handleSave} onClose={handleClosePanel} />
+              </div>
+            )}
           </>
         )}
       </main>
