@@ -4,7 +4,6 @@ const AdminPanel = ({ onSave }) => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [newNode, setNewNode] = useState({ name: '', type: 'child', parentId: '' });
-  const [editingNode, setEditingNode] = useState(null);
 
   useEffect(() => {
     // Load existing nodes and links
